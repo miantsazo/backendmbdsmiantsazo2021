@@ -9,7 +9,9 @@ let AssignmentSchema = Schema({
   nom: String,
   rendu: Boolean,
   auteur: String,
-  matiere: matiere,
+  matiere: {
+    type: mongoose.Schema.Types.ObjectId, ref: 'Matiere'
+  },
   note: Number,
   remarques: String,
 });

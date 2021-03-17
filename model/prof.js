@@ -5,7 +5,7 @@ let Schema = mongoose.Schema;
 let ProfSchema = Schema({
   nom: String,
   prenom: String,
-  photoUrl: String,
+  photoUrl: String
 });
 
 ProfSchema.plugin(aggregatePaginate);

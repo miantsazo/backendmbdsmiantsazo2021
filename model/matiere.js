@@ -5,7 +5,9 @@ let Schema = mongoose.Schema;
 
 let MatiereSchema = Schema({
   libelle: String,
-  prof: prof,
+  prof: {
+    type: mongoose.Schema.Types.ObjectId, ref: 'Prof'
+  },
 });
 
 MatiereSchema.plugin(aggregatePaginate);

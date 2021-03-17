@@ -12,7 +12,16 @@ let Assignment = require("../model/assignment");
 // }
 
 function getAssignments(req, res) {
-  var aggregateQuery = Assignment.aggregate();
+  var aggregateQuery = Assignment.aggregate([
+    {
+      "$lookup": {
+        "from": "assignments",
+        "localField": "matiere",
+        "foriegnField": "matiere",
+        "as": "assignments"
+      }
+    },
+  ]);
   Assignment.aggregatePaginate(
     aggregateQuery,
     {
@@ -23,7 +32,7 @@ function getAssignments(req, res) {
       if (err) {
         res.send(err);
       }
-      res.send(assignments);
+      res.send(Assignment.populate(assignments, { path: 'matiere' }));
     }
   );
 }
