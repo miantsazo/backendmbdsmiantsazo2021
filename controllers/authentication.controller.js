@@ -20,7 +20,7 @@ function signup(req, res) {
 
             if (user1) {
                 return res.status(401).json({
-                    message: "Utilisateur existant"
+                    message: "Utilisateur déjà existant"
                 })
             }
 
@@ -68,8 +68,6 @@ function login(req, res) {
             );
             res.status(200).json({
                 token: token,
-                expiresIn: 7200,
-                userId: fetchedUser._id
             });
         });
 
@@ -87,13 +85,12 @@ function checkAuthorization(req, res, next) {
     }
 
     jwt.verify(token, config.SECRET).then(user => {
-        // req.userData = {
-        //     username: checkedToken.username,
-        //     userId = checkedToken.userId
-        // }
-
         req.user = user;
         next();
+    }).catch(err => {
+        return res.status(401).json({
+            message: "Token invalide"
+        })
     })
 }
 
