@@ -1,6 +1,5 @@
 let mongoose = require("mongoose");
 var aggregatePaginate = require("mongoose-aggregate-paginate-v2");
-const prof = require("./prof");
 let Schema = mongoose.Schema;
 
 let MatiereSchema = Schema({

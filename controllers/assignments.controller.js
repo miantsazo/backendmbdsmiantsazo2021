@@ -5,7 +5,7 @@ function getAssignments(req, res) {
         {
             // https://docs.mongodb.com/manual/reference/operator/aggregation/lookup/
             "$lookup": {
-                "from": "matiere",
+                "from": "matieres",
                 "localField": "matiere",
                 "foreignField": "_id",
                 "as": "matiere"
@@ -52,6 +52,10 @@ function postAssignment(req, res) {
     assignment.nom = req.body.nom;
     assignment.dateDeRendu = req.body.dateDeRendu;
     assignment.rendu = req.body.rendu;
+    assignment.auteur = req.body.auteur;
+    assignment.matiere = req.body.matiere._id;
+    assignment.note = req.body.note;
+    assignment.remarques = req.body.remarques;
 
     console.log("POST assignment reçu :");
     console.log(assignment);

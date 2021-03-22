@@ -6,6 +6,8 @@ let ProfSchema = Schema({
   nom: String,
   prenom: String,
   photoUrl: String
+}, {
+  collection: 'prof'
 });
 
 ProfSchema.plugin(aggregatePaginate);
