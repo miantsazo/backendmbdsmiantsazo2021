@@ -1,3 +1,4 @@
+const { ObjectId } = require("bson");
 let Assignment = require("../model/assignment");
 
 // Récupérer tous les assignments (GET)
@@ -41,12 +42,42 @@ function getAssignments(req, res) {
 function getAssignment(req, res) {
   let assignmentId = req.params.id;
 
-  Assignment.findOne({ id: assignmentId }, (err, assignment) => {
-    if (err) {
-      res.send(err);
-    }
-    res.json(assignment);
-  });
+  // Assignment.findOne({ id: assignmentId }, (err, assignment) => {
+  //   if (err) {
+  //     res.send(err);
+  //   }
+  //   res.json(assignment);
+  // });
+
+  Assignment.aggregate([
+    {
+      $match: {
+        assignment: {
+          $in: [ObjectId(assignmentId)]
+        }
+      }
+    }, {
+      // https://docs.mongodb.com/manual/reference/operator/aggregation/lookup/
+      "$lookup": {
+        "from": "matieres",
+        "localField": "matiere",
+        "foreignField": "_id",
+        "as": "matiere"
+      }
+    },
+    {
+      "$lookup": {
+        "from": "prof",
+        "localField": "matiere.prof",
+        "foreignField": "_id",
+        "as": "prof"
+      }
+    },
+  ]).then(res => {
+    console.log(res);
+  })
+
+
 }
 
 // Ajout d'un assignment (POST)

@@ -1,3 +1,4 @@
+const { ObjectId } = require("bson");
 let Assignment = require("../model/assignment");
 
 function getAssignments(req, res) {
@@ -37,12 +38,37 @@ function getAssignments(req, res) {
 function getAssignment(req, res) {
     let assignmentId = req.params.id;
 
-    Assignment.findOne({ _id: assignmentId }, (err, assignment) => {
-        if (err) {
-            res.send(err);
-        }
-        res.json(assignment);
+    Assignment.aggregate([
+        {
+            $match: {
+                _id: {
+                    $in: [ObjectId(assignmentId)]
+                }
+            }
+        },
+        {
+            // https://docs.mongodb.com/manual/reference/operator/aggregation/lookup/
+            "$lookup": {
+                "from": "matieres",
+                "localField": "matiere",
+                "foreignField": "_id",
+                "as": "matiere"
+            }
+        },
+        {
+            "$lookup": {
+                "from": "prof",
+                "localField": "matiere.prof",
+                "foreignField": "_id",
+                "as": "prof"
+            }
+        },
+    ]).then(response => {
+        res.send(response)
+    }).catch(err => {
+        res.send(err);
     });
+
 }
 
 // Ajout d'un assignment (POST)
@@ -70,21 +96,16 @@ function postAssignment(req, res) {
 
 // Update d'un assignment (PUT)
 function updateAssignment(req, res) {
-    console.log("UPDATE recu assignment : ");
-    console.log(req.body);
     Assignment.findByIdAndUpdate(
         req.body._id,
         req.body,
         { new: true },
         (err, assignment) => {
             if (err) {
-                console.log(err);
-                res.send(err);
+                res.json({ message: "Une erreur est survenue, modification non effectuée" });
             } else {
-                res.json({ message: "updated" });
+                res.json({ message: "Modification effectuée" });
             }
-
-            // console.log('updated ', assignment)
         }
     );
 }
@@ -95,7 +116,7 @@ function deleteAssignment(req, res) {
         if (err) {
             res.send(err);
         }
-        res.json({ message: `${assignment.nom} deleted` });
+        res.json({ message: `${assignment.nom} supprimé` });
     });
 }
 

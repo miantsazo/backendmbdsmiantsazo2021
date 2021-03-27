@@ -1,5 +1,3 @@
-const SECRET = "assignment_secret";
-
 module.exports = {
-    SECRET
+    'SECRET': "assignment_secret"
 }
