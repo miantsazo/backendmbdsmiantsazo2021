@@ -1,7 +1,7 @@
 const User = require('../model/user');
-const config = require('../config');
 const bcrypt = require("bcrypt");
 const jwt = require("jsonwebtoken");
+const config = require('../config');
 
 function signup(req, res) {
     bcrypt.hash(req.body.password, 10, (err, hash) => {
@@ -74,28 +74,7 @@ function login(req, res) {
     })
 }
 
-function checkAuthorization(req, res, next) {
-    const header = req.headers.authorization;
-    const token = header.split(" ")[1];
-
-    if (token == null) {
-        return res.status(401).json({
-            message: "Session expirée"
-        })
-    }
-
-    jwt.verify(token, config.SECRET).then(user => {
-        req.user = user;
-        next();
-    }).catch(err => {
-        return res.status(401).json({
-            message: "Token invalide"
-        })
-    })
-}
-
 module.exports = {
     signup,
-    login,
-    checkAuthorization
+    login
 };

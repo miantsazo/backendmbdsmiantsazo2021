@@ -4,6 +4,11 @@ let Assignment = require("../model/assignment");
 function getAssignments(req, res) {
     var aggregateQuery = Assignment.aggregate([
         {
+            "$match": {
+                "rendu": req.query.rendu === 'true'
+            }
+        },
+        {
             // https://docs.mongodb.com/manual/reference/operator/aggregation/lookup/
             "$lookup": {
                 "from": "matieres",

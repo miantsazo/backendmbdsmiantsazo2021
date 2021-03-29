@@ -3,20 +3,21 @@ const authenticationController = require('../controllers/authentication.controll
 const matieresController = require('../controllers/matieres.controller');
 const express = require('express');
 const router = express.Router();
+const auth = require('../middleware/auth');
 
 // Authentication routes
 router.post('/signup', authenticationController.signup);
 router.post('/login', authenticationController.login);
 
 // Assignments routes
-router.get('/assignments', assignmentsController.getAssignments);
-router.get('/assignments/:id', assignmentsController.getAssignment);
-router.post('/assignments', assignmentsController.postAssignment);
-router.put('/assignments', assignmentsController.updateAssignment);
-router.delete('/assignments/:id', assignmentsController.deleteAssignment);
+router.get('/assignments', auth.checkAuthorization, assignmentsController.getAssignments);
+router.get('/assignments/:id', auth.checkAuthorization, assignmentsController.getAssignment);
+router.post('/assignments', auth.checkAuthorization, assignmentsController.postAssignment);
+router.put('/assignments', auth.checkAuthorization, assignmentsController.updateAssignment);
+router.delete('/assignments/:id', auth.checkAuthorization, assignmentsController.deleteAssignment);
 
 //Matieres routes
-router.get('/matieres', matieresController.getMatieres);
+router.get('/matieres', auth.checkAuthorization, matieresController.getMatieres);
 
 
 module.exports = router;
