@@ -64,7 +64,7 @@ function login(req, res) {
             const token = jwt.sign(
                 { username: fetchedUser.username, userId: fetchedUser._id },
                 config.SECRET,
-                { expiresIn: "2h" }
+                { expiresIn: "1h" }
             );
             res.status(200).json({
                 token: token,

@@ -18,7 +18,7 @@ function checkAuthorization(req, res, next) {
     jwt.verify(token, config.SECRET, (err, verified) => {
         if (err) {
             return res.status(401).json({
-                message: "Token invalide"
+                message: "Session expirée, veuillez vous reconnecter"
             });
         }
         next();
