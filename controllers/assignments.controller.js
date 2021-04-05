@@ -69,9 +69,18 @@ function getAssignment(req, res) {
             }
         },
     ]).then(response => {
-        res.send(response)
+        if (response.length == 0) {
+            res.status(404).json({
+                message: "Assignment inexistant"
+            })
+        }
+        else {
+            res.send(response)
+        }
     }).catch(err => {
-        res.send(err);
+        res.status(500).json({
+            message: "Une erreur est survenue, veuillez réessayer"
+        })
     });
 
 }
@@ -93,9 +102,11 @@ function postAssignment(req, res) {
 
     assignment.save((err) => {
         if (err) {
-            res.send("cant post assignment ", err);
+            res.status(500).json({
+                message: "Une erreur est survenue, veuillez réessayer"
+            })
         }
-        res.json({ message: `${assignment.nom} saved!` });
+        res.json({ message: 'Assignment ajouté' });
     });
 }
 
@@ -107,7 +118,9 @@ function updateAssignment(req, res) {
         { new: true },
         (err, assignment) => {
             if (err) {
-                res.json({ message: "Une erreur est survenue, modification non effectuée" });
+                res.status(500).json({
+                    message: "Une erreur est survenue, veuillez réessayer"
+                })
             } else {
                 res.json({ message: "Modification effectuée" });
             }
@@ -119,7 +132,9 @@ function updateAssignment(req, res) {
 function deleteAssignment(req, res) {
     Assignment.findByIdAndRemove(req.params.id, (err, assignment) => {
         if (err) {
-            res.send(err);
+            res.status(500).json({
+                message: "Une erreur est survenue, veuillez réessayer"
+            })
         }
         res.json({ message: `${assignment.nom} supprimé` });
     });

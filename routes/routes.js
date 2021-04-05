@@ -5,6 +5,31 @@ const profsController = require('../controllers/profs.controller');
 const express = require('express');
 const router = express.Router();
 const auth = require('../middleware/auth');
+//https://www.djamware.com/post/5f0533338ce55338fd15aca3/mean-stack-angular-10-tutorial-upload-image-file
+var multer  = require('multer')
+router.use(express.static('uploads'));
+var storage = multer.diskStorage({
+    destination: (req, file, cb) => {
+        console.log("req : " + req);
+        cb(null, './public/uploads');
+    },
+    filename: (req, file, cb) => {
+        console.log(file);
+        var filetype = '';
+        if (file.mimetype === 'image/gif') {
+            filetype = 'gif';
+        }
+        if (file.mimetype === 'image/png') {
+            filetype = 'png';
+        }
+        if (file.mimetype === 'image/jpeg') {
+            filetype = 'jpg';
+        }
+        cb(null, 'image-' + Date.now() + '.' + filetype);
+    }
+});
+
+var upload = multer({ storage: storage });
 
 // Authentication routes
 router.post('/signup', authenticationController.signup);
@@ -26,6 +51,10 @@ router.delete('/matieres/:id', auth.checkAuthorization, matieresController.delet
 
 // Profs routes
 router.get('/profs', auth.checkAuthorization, profsController.getProfs);
+router.get('/profs/:id', auth.checkAuthorization, profsController.getProf);
+router.delete('/profs/:id', auth.checkAuthorization, profsController.deleteProf);
+router.put('/profs', auth.checkAuthorization, upload.single('photo'), profsController.updateProf);
+router.post('/profs', auth.checkAuthorization,upload.single('photo'), profsController.addProf)
 
 
 module.exports = router;
