@@ -1,31 +1,41 @@
 const { ObjectId } = require("bson");
 let Assignment = require("../model/assignment");
+const matiere = require("../model/matiere");
 
 function getAssignments(req, res) {
-    var aggregateQuery = Assignment.aggregate([
-        {
+    var match = [{
+        "$match": {
+            "rendu": req.query.rendu === 'true'
+        },
+    },
+    {
+        // https://docs.mongodb.com/manual/reference/operator/aggregation/lookup/
+        "$lookup": {
+            "from": "matieres",
+            "localField": "matiere",
+            "foreignField": "_id",
+            "as": "matiere"
+        }
+    },
+    {
+        "$lookup": {
+            "from": "prof",
+            "localField": "matiere.prof",
+            "foreignField": "_id",
+            "as": "prof"
+        }
+    }];
+    if (req.query.q != null) {
+        match.push({
             "$match": {
-                "rendu": req.query.rendu === 'true'
-            }
-        },
-        {
-            // https://docs.mongodb.com/manual/reference/operator/aggregation/lookup/
-            "$lookup": {
-                "from": "matieres",
-                "localField": "matiere",
-                "foreignField": "_id",
-                "as": "matiere"
-            }
-        },
-        {
-            "$lookup": {
-                "from": "prof",
-                "localField": "matiere.prof",
-                "foreignField": "_id",
-                "as": "prof"
-            }
-        },
-    ]);
+                "nom": {
+                    "$regex": req.query.q,
+                    "$options": "i"
+                }
+            },
+        })
+    }
+    var aggregateQuery = Assignment.aggregate(match);
     Assignment.aggregatePaginate(
         aggregateQuery,
         {
