@@ -19,8 +19,13 @@ Ce repository contient les codes sources de l'application backend qui comprendra
 - Faire npm install
 - Faire ng serve
 
+#Lancement
+- Ouvrir http://localhost:4200/ sur votre navigateur
+- Connexion : KennyKenny / testtest
+
 # Général 
 Utilisation de JWT pour la gestion de l'authentification
+Duree de vie du token: 1h
 
 # Menu Assignments
 Deux onglets contenant respectivement :
