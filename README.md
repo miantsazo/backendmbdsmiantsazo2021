@@ -24,8 +24,8 @@ Ce repository contient les codes sources de l'application backend qui comprendra
 - Connexion : KennyKenny / testtest
 
 # Général 
-Utilisation de JWT pour la gestion de l'authentification
-Duree de vie du token: 1h
+- Utilisation de JWT pour la gestion de l'authentification
+- Duree de vie du token: 1h
 
 # Menu Assignments
 Deux onglets contenant respectivement :
